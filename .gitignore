@@ -1,0 +1,5 @@
+dist/
+obj/
+.cache/
+.deps/
+compile_commands.json
