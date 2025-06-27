@@ -1,5 +1,7 @@
-# HHK3template
-A modern template for HHK3!
+# HHK3template with uGFX
+A modern template for HHK3 using uGFX!
+
+Checkout the other branches for more variants.
 
 ## How to Setup
 1. Clone to project
