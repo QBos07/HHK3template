@@ -1,3 +1,8 @@
+
+GFXLIB:=ugfx
+include $(GFXLIB)/gfx.mk
+include $(GFXLIB)/boards/base/HHK/board.mk
+
 SOURCEDIR = src
 BUILDDIR = obj
 OUTDIR = dist
@@ -10,8 +15,8 @@ SDK_DIR?=/sdk
 
 DEPFLAGS=-MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 WARNINGS=-Wall -Wextra -pedantic -Werror -pedantic-errors
-INCLUDES=-I$(SDK_DIR)/include #-I$(SOURCEDIR)
-DEFINES=
+INCLUDES=-I$(SDK_DIR)/include $(GFXINC:%=-I%) -I$(SOURCEDIR)
+DEFINES=$(GFXDEFS)
 FUNCTION_FLAGS=-flto=auto -ffat-lto-objects -fno-builtin -ffunction-sections -fdata-sections -gdwarf-5 -O2
 COMMON_FLAGS=$(FUNCTION_FLAGS) $(INCLUDES) $(WARNINGS) $(DEFINES)
 
@@ -22,7 +27,7 @@ CXX:=sh4a_nofpueb-elf-g++
 CXX_FLAGS=-std=c++20 $(COMMON_FLAGS)
 
 LD:=sh4a_nofpueb-elf-g++
-LD_FLAGS:=$(FUNCTION_FLAGS) -Wl,--gc-sections
+LD_FLAGS:=$(FUNCTION_FLAGS) -Wl,--gc-sections -fno-lto
 LIBS:=-L$(SDK_DIR) -lsdk
 
 READELF:=sh4a_nofpueb-elf-readelf
@@ -33,13 +38,14 @@ APP_ELF := $(OUTDIR)/CPapp.elf
 APP_HH3 := $(APP_ELF:.elf=.hh3)
 
 AS_SOURCES:=$(shell find $(SOURCEDIR) -name '*.S')
-CC_SOURCES:=$(shell find $(SOURCEDIR) -name '*.c')
+CC_SOURCES:=$(shell find $(SOURCEDIR) -name '*.c') $(GFXSRC)
 CXX_SOURCES:=$(shell find $(SOURCEDIR) -name '*.cpp')
 OBJECTS := $(addprefix $(BUILDDIR)/,$(AS_SOURCES:.S=.o)) \
 	$(addprefix $(BUILDDIR)/,$(CC_SOURCES:.c=.o)) \
 	$(addprefix $(BUILDDIR)/,$(CXX_SOURCES:.cpp=.o))
 
 NOLTOOBJS := $(foreach obj, $(OBJECTS), $(if $(findstring /nolto/, $(obj)), $(obj)))
+GFXOBJS := $(foreach obj, $(OBJECTS), $(if $(findstring /$(GFXLIB)/, $(obj)), $(obj)))
 
 DEPFILES := $(OBJECTS:$(BUILDDIR)/%.o=$(DEPDIR)/%.d)
 
@@ -62,6 +68,7 @@ $(APP_ELF): $(OBJECTS)
 	$(LD) -Wl,-Map $@.map -o $@ $(LD_FLAGS) $^ $(LIBS)
 
 $(NOLTOOBJS): FUNCTION_FLAGS+=-fno-lto
+$(GFXOBJS): WARNINGS=-Wall -Wextra -Wno-incompatible-pointer-types -Wno-duplicate-decl-specifier -Wno-enum-conversion -Wno-unused-variable
 
 $(BUILDDIR)/%.o: %.S
 	@mkdir -p $(dir $@)
