@@ -1,6 +1,8 @@
 # HHK3template
 A modern template for HHK3!
 
+Checkout the other branches for more variants.
+
 ## How to Setup
 1. Clone to project
 2. Enter the devcontainer
