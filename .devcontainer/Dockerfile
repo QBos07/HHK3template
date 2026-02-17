@@ -1,6 +1,6 @@
 FROM ghcr.io/classpaddev/hollyhock-3:v2.2.0 AS toolchain
 
-FROM mcr.microsoft.com/devcontainers/base:debian12 AS base
+FROM mcr.microsoft.com/devcontainers/base:debian13 AS base
 
 # Install required packages KEEP IN SYNC (+clangd bear nano)
 RUN apt-get update -y && apt-get upgrade -y && \
