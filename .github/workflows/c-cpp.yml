@@ -16,7 +16,7 @@ jobs:
   build-artifact:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/classpaddev/hollyhock-3:v2.2.0
+      image: ghcr.io/classpaddev/hollyhock-3:v2.2.1
       credentials:
        username: ${{ github.actor }}
        password: ${{ secrets.github_token }}
