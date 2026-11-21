@@ -19,7 +19,7 @@ CC:=sh4a_nofpueb-elf-gcc
 CC_FLAGS=-std=c23 $(COMMON_FLAGS)
 
 CXX:=sh4a_nofpueb-elf-g++
-CXX_FLAGS=-std=c++20 $(COMMON_FLAGS)
+CXX_FLAGS=-std=c++23 $(COMMON_FLAGS)
 
 LD:=sh4a_nofpueb-elf-g++
 LD_FLAGS:=$(FUNCTION_FLAGS) -Wl,--gc-sections
